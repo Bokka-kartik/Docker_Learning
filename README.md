@@ -1,4 +1,4 @@
-# Stage 2: Docker Learning Lab
+# S Docker Learning Lab
 
 A small React + Vite project for learning how to package a frontend application in Docker. The app includes an interactive checklist and the commands needed to build and run it yourself.
 
