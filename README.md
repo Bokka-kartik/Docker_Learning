@@ -53,6 +53,19 @@ Visit [http://localhost:8080](http://localhost:8080).
 
 The Dockerfile uses two stages: Node builds the Vite application, and a small Nginx image serves the generated `dist` folder.
 
+## Deploy to Vercel
+
+This repository is also configured for Vercel with `vercel.json`. Import the GitHub repository into Vercel and use these settings:
+
+```text
+Framework preset: Vite
+Build command: npm run build
+Output directory: dist
+Install command: npm install
+```
+
+Vercel serves the generated static files directly, so this project does not need `process.env.PORT`, `app.listen()`, or a `start` script. Vercel also does not use `Dockerfile` or `Dockerfile.vercel` when deploying a Vite frontend. Keep `Dockerfile` for running the same app with Docker locally or on a container host.
+
 ## Project structure
 
 ```text
