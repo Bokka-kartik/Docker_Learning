@@ -1,61 +1,135 @@
 # Docker Learning Lab
 
-A small React + Vite project for learning how to package a frontend application in Docker. The app includes an interactive checklist and the commands needed to build and run it yourself.
+A hands-on Docker learning project demonstrating how to containerize a React + Vite application using a multi-stage build and Nginx.
 
-## What is included
+## Overview
 
-- React 19 with Vite
-- A responsive Docker learning dashboard
-- A multi-stage Dockerfile
-- Nginx serving the production build
-- ESLint configuration
+This project is a practical learning repo focused on Docker fundamentals. It takes a small React frontend, builds it for production, and then serves the generated static files through Nginx inside a container.
 
-## Run locally
+The goal is to understand the full container workflow:
 
-### Requirements
+- package the app
+- build a production artifact
+- run it in a lightweight container
+- expose the app on a mapped port
+
+## Features & Concepts
+
+- React 19 + Vite frontend
+- Multi-stage Docker build
+- Production build optimization
+- Nginx serving the built app
+- Container port mapping
+- Local Docker workflow
+- Vercel deployment configuration
+
+## Docker Workflow
+
+```text
+React + Vite source
+        ↓
+Node build stage
+        ↓
+npm install + npm run build
+        ↓
+Production dist output
+        ↓
+Nginx runtime stage
+        ↓
+Container running on port 80
+        ↓
+Host port mapped to localhost:8080
+```
+
+This repository demonstrates the key Docker idea that the build and runtime environments can be separated:
+
+- Stage 1: a Node image installs dependencies and creates the production bundle
+- Stage 2: a lightweight Nginx image serves that final built output
+- Result: the final container does not need Node.js installed at runtime
+
+## Project Structure
+
+```text
+Docker_Learning/
+├── src/
+│   ├── App.jsx
+│   ├── App.css
+│   └── index.css
+├── public/
+├── index.html
+├── vite.config.js
+├── eslint.config.js
+├── package.json
+├── package-lock.json
+├── Dockerfile.vercel
+├── vercel.json
+├── README.md
+└── .gitignore
+```
+
+## Local Development
+
+### Prerequisites
 
 - Node.js 22 or newer
 - npm
 
-Install dependencies and start the Vite development server:
+### Start the app locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the local URL shown in the terminal, usually `http://localhost:5173`.
+Then open the local Vite URL shown in the terminal, typically:
 
-To create a production build or check the code with ESLint:
+```text
+http://localhost:5173
+```
+
+### Production build check
 
 ```bash
 npm run build
 npm run lint
 ```
 
-> `npm run start` is not defined in this project. Use `npm run dev` for local development.
+> This project does not define `npm run start` because it is designed as a Vite frontend. Use `npm run dev` for local development and `npm run build` for production output.
 
 ## Run with Docker
 
-Build the image from this directory:
+The repository includes a Docker configuration in `Dockerfile.vercel`.
+
+### Build the image
 
 ```bash
-docker build -t stage2-app .
+docker build -f Dockerfile.vercel -t docker-learning .
 ```
 
-Start the container and map port `8080` on your computer to Nginx port `80`:
+### Run the container
 
 ```bash
-docker run --rm -p 8080:80 stage2-app
+docker run --rm -p 8080:80 docker-learning
 ```
 
-Visit [http://localhost:8080](http://localhost:8080).
+Then visit:
 
-The Dockerfile uses two stages: Node builds the Vite application, and a small Nginx image serves the generated `dist` folder.
+```text
+http://localhost:8080
+```
 
-## Deploy to Vercel
+The `-p 8080:80` flag maps:
 
-This repository is also configured for Vercel with `vercel.json`. Import the GitHub repository into Vercel and use these settings:
+- host port: `8080`
+- container port: `80`
+
+This means traffic sent to your local machine on port 8080 is forwarded to the container's Nginx server.
+
+## Deployment
+
+This project is also configured for Vercel deployment via `vercel.json`.
+
+Typical Vercel settings:
 
 ```text
 Framework preset: Vite
@@ -64,30 +138,17 @@ Output directory: dist
 Install command: npm install
 ```
 
-Vercel serves the generated static files directly, so this project does not need `process.env.PORT`, `app.listen()`, or a `start` script. Vercel also does not use `Dockerfile` or `Dockerfile.vercel` when deploying a Vite frontend. Keep `Dockerfile` for running the same app with Docker locally or on a container host.
+Vercel deploys the static build directly, while the Docker setup is mainly useful for learning how a frontend can be containerized locally or in a container host environment.
 
-## Project structure
+## Why This Repo Matters
 
-```text
-src/
-	App.jsx       # Main learning dashboard
-	App.css       # Dashboard styles
-	index.css     # Global styles and design tokens
-public/         # Static assets
-Dockerfile      # Production container definition
-```
+This project is a good example of containerization basics for a frontend app. It teaches a practical workflow that many developers use when moving from local development to deployment:
 
-## GitHub
+- build a frontend app
+- create an optimized production bundle
+- serve it with Nginx
+- run the app in a container
 
-After creating a repository on GitHub, run these commands from the `Stage2` folder:
+## Author
 
-```bash
-git init
-git add .
-git commit -m "Create Docker learning lab"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-git push -u origin main
-```
-
-Replace the remote URL with your own GitHub repository URL.
+GitHub: [Bokka-kartik](https://github.com/Bokka-kartik)
